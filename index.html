@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyanEchoes NFT</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#0a0a0a;
+    color:#fff;
+}
+
+/* Header */
+header {
+    padding:15px;
+    text-align:center;
+    font-size:24px;
+    background: linear-gradient(90deg,#00c3ff,#ffd700);
+    color:#000;
+    font-weight:bold;
+}
+
+/* Login */
+#login {
+    text-align:center;
+    margin-top:50px;
+}
+
+input {
+    padding:10px;
+    margin:5px;
+    border:none;
+    border-radius:5px;
+}
+
+button {
+    padding:10px 15px;
+    border:none;
+    border-radius:5px;
+    background:#00c3ff;
+    color:#000;
+    cursor:pointer;
+}
+
+/* Gallery */
+#gallery {
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+.card {
+    background:#111;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 0 10px #00c3ff;
+}
+
+.card img {
+    width:100%;
+    border-radius:10px;
+}
+
+.hidden { display:none; }
+
+/* Admin Panel */
+#adminPanel {
+    padding:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>MyanEchoes NFT</header>
+
+<!-- LOGIN -->
+<div id="login">
+    <h2>Login</h2>
+    <input type="text" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- MEMBER VIEW -->
+<div id="member" class="hidden">
+    <h2 style="text-align:center;">NFT Gallery</h2>
+    <div id="gallery"></div>
+</div>
+
+<!-- ADMIN VIEW -->
+<div id="admin" class="hidden">
+    <h2 style="text-align:center;">Admin Dashboard</h2>
+
+    <div id="adminPanel">
+        <input id="img" placeholder="Image URL">
+        <input id="name" placeholder="NFT Name">
+        <input id="desc" placeholder="Description">
+        <input id="link" placeholder="Link">
+        <button onclick="addNFT()">Add NFT</button>
+    </div>
+
+    <h3>Manage Admin Emails</h3>
+    <input id="newAdmin" placeholder="Add Admin Email">
+    <button onclick="addAdmin()">Add</button>
+    <ul id="adminList"></ul>
+</div>
+
+<script>
+
+// Default Admin Emails
+let admins = [
+"sai924166@gmail.com",
+"sais89758@gmail.com",
+"nft3187@gmail.com"
+];
+
+// Password
+let password = "Zawzaw123";
+
+// NFT Storage
+let nfts = [];
+
+// LOGIN
+function login(){
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("password").value;
+
+    if(pass !== password){
+        alert("Wrong password");
+        return;
+    }
+
+    document.getElementById("login").classList.add("hidden");
+
+    if(admins.includes(email)){
+        document.getElementById("admin").classList.remove("hidden");
+        renderAdmins();
+    } else {
+        document.getElementById("member").classList.remove("hidden");
+        renderNFTs();
+    }
+}
+
+// ADD NFT
+function addNFT(){
+    let img = document.getElementById("img").value;
+    let name = document.getElementById("name").value;
+    let desc = document.getElementById("desc").value;
+    let link = document.getElementById("link").value;
+
+    nfts.push({img,name,desc,link});
+    renderNFTs();
+}
+
+// RENDER NFT
+function renderNFTs(){
+    let gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
+
+    nfts.forEach(nft=>{
+        gallery.innerHTML += `
+        <div class="card">
+            <img src="${nft.img}">
+            <h3>${nft.name}</h3>
+            <p>${nft.desc}</p>
+            <button onclick="window.open('${nft.link}')">Interested</button>
+        </div>
+        `;
+    });
+}
+
+// ADMIN LIST
+function renderAdmins(){
+    let list = document.getElementById("adminList");
+    list.innerHTML = "";
+
+    admins.forEach((a,i)=>{
+        list.innerHTML += `
+        <li>${a} <button onclick="removeAdmin(${i})">Remove</button></li>
+        `;
+    });
+}
+
+// ADD ADMIN
+function addAdmin(){
+    let newAdmin = document.getElementById("newAdmin").value;
+    admins.push(newAdmin);
+    renderAdmins();
+}
+
+// REMOVE ADMIN
+function removeAdmin(i){
+    admins.splice(i,1);
+    renderAdmins();
+}
+
+</script>
+
+</body>
+</html>
