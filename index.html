@@ -201,6 +201,29 @@ function removeAdmin(i){
 }
 
 </script>
+...
+<script>
+// မင်းရဲ့ website JS code
+</script>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBjEQrF3YgdMR7IotSbJbCB-LxhhRTdEeM",
+    authDomain: "myanechoes.firebaseapp.com",
+    projectId: "myanechoes",
+    storageBucket: "myanechoes.firebasestorage.app",
+    messagingSenderId: "79155858819",
+    appId: "1:79155858819:web:8fd4ffe96c23dab490bab6",
+    measurementId: "G-RJ2S6B8J24"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 
 </body>
 </html>
