@@ -225,5 +225,31 @@ function removeAdmin(i){
   const analytics = getAnalytics(app);
 </script>
 
+<!-- ဒီနေရာမှာထည့် -->
+<script type="module">
+import { getAuth, GoogleAuthProvider, signInWithPopup } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
+
+window.googleLogin = function(){
+    signInWithPopup(auth, provider)
+    .then((result) => {
+        alert("Login Success: " + result.user.email);
+    })
+    .catch((error) => {
+        alert("Error: " + error.message);
+    });
+}
+
+</script>
+
+<h1>MyanEchoes NFT</h1>
+
+<button onclick="googleLogin()">Login with Google</button>
+
+<!-- Admin Dashboard code -->
+
 </body>
 </html>
