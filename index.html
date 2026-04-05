@@ -2,17 +2,81 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyanEchoes NFT</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#0a0a0a;color:#fff;text-align:center}
-header{padding:15px;font-size:24px;background:linear-gradient(90deg,#00c3ff,#ffd700);color:#000}
-input,button{padding:10px;margin:5px;border:none;border-radius:5px}
-button{background:#00c3ff;color:#000}
-.hidden{display:none}
-#gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;padding:20px}
-.card{background:#111;padding:15px;border-radius:10px;box-shadow:0 0 10px #00c3ff}
-.card img{width:100%}
+body{
+margin:0;
+font-family:Arial;
+background:#0b0f1a;
+color:#fff;
+text-align:center;
+}
+
+/* Header */
+header{
+padding:20px;
+font-size:26px;
+font-weight:bold;
+background:linear-gradient(90deg,#00c3ff,#6a5cff);
+}
+
+/* Card Layout */
+.box{
+max-width:400px;
+margin:40px auto;
+padding:25px;
+background:#111827;
+border-radius:15px;
+box-shadow:0 0 25px rgba(0,195,255,0.3);
+}
+
+/* Inputs */
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:8px;
+background:#1f2937;
+color:#fff;
+}
+
+/* Buttons */
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:linear-gradient(90deg,#00c3ff,#6a5cff);
+color:#fff;
+font-weight:bold;
+cursor:pointer;
+}
+
+/* Gallery */
+#gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:#111;
+padding:15px;
+border-radius:12px;
+box-shadow:0 0 15px rgba(0,195,255,0.2);
+}
+
+.card img{
+width:100%;
+border-radius:10px;
+}
+
+.hidden{display:none;}
 </style>
 
 </head>
@@ -21,29 +85,36 @@ button{background:#00c3ff;color:#000}
 
 <header>MyanEchoes NFT</header>
 
-<div id="login">
+<!-- LOGIN -->
+<div id="login" class="box">
 <h2>Login</h2>
 <button onclick="googleLogin()">Login with Google</button>
 </div>
 
+<!-- MEMBER -->
 <div id="member" class="hidden">
 <h2>NFT Gallery</h2>
 <div id="gallery"></div>
 </div>
 
-<div id="admin" class="hidden">
+<!-- ADMIN -->
+<div id="admin" class="hidden box">
 <h2>Admin Dashboard</h2>
-<input id="img" placeholder="Image URL">
+
+<input type="file" id="img">
 <input id="name" placeholder="NFT Name">
 <input id="desc" placeholder="Description">
 <input id="link" placeholder="Link">
+
 <button onclick="addNFT()">Add NFT</button>
+
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
+/* Firebase */
 const firebaseConfig={
 apiKey:"AIzaSyBjEQrF3YgdMR7IotSbJbCB-LxhhRTdEeM",
 authDomain:"myanechoes.firebaseapp.com",
@@ -54,12 +125,20 @@ const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const provider=new GoogleAuthProvider();
 
-let admins=["sai924166@gmail.com","sais89758@gmail.com"];
+/* Admin Emails */
+let admins=[
+"sai924166@gmail.com",
+"sais89758@gmail.com"
+];
+
+/* NFT Data */
 let nfts=[];
 
+/* Google Login */
 window.googleLogin=()=>{
 signInWithPopup(auth,provider).then(res=>{
 let email=res.user.email;
+
 document.getElementById("login").classList.add("hidden");
 
 if(admins.includes(email)){
@@ -73,8 +152,11 @@ alert(err.message);
 });
 };
 
+/* Add NFT */
 window.addNFT=()=>{
-let img=document.getElementById("img").value;
+let file=document.getElementById("img").files[0];
+let img=URL.createObjectURL(file);
+
 let name=document.getElementById("name").value;
 let desc=document.getElementById("desc").value;
 let link=document.getElementById("link").value;
@@ -83,11 +165,14 @@ nfts.push({img,name,desc,link});
 renderNFTs();
 };
 
+/* Render NFT */
 function renderNFTs(){
 let g=document.getElementById("gallery");
 g.innerHTML="";
+
 nfts.forEach(n=>{
-g.innerHTML+=`<div class="card">
+g.innerHTML+=`
+<div class="card">
 <img src="${n.img}">
 <h3>${n.name}</h3>
 <p>${n.desc}</p>
