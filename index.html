@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,55 +8,56 @@
 <style>
 body{
 margin:0;
-font-family:Arial;
-background:#0b0f1a;
+font-family:-apple-system,BlinkMacSystemFont;
+background:#0b1220;
 color:#fff;
+}
+
+/* HEADER */
+header{
+padding:18px;
+text-align:center;
+font-size:26px;
+font-weight:bold;
+background:linear-gradient(90deg,#00c6ff,#0072ff);
+}
+
+/* CARD */
+.box{
+max-width:400px;
+margin:60px auto;
+background:#111827;
+padding:25px;
+border-radius:15px;
+box-shadow:0 0 30px rgba(0,114,255,0.3);
 text-align:center;
 }
 
-/* Header */
-header{
-padding:20px;
-font-size:26px;
-font-weight:bold;
-background:linear-gradient(90deg,#00c3ff,#6a5cff);
-}
-
-/* Box */
-.box{
-max-width:400px;
-margin:40px auto;
-padding:25px;
-background:#111827;
-border-radius:15px;
-box-shadow:0 0 25px rgba(0,195,255,0.3);
-}
-
-/* Inputs */
+/* INPUT */
 input{
-width:100%;
+width:90%;
 padding:12px;
-margin:10px 0;
+margin:8px 0;
 border:none;
 border-radius:8px;
 background:#1f2937;
 color:#fff;
 }
 
-/* Button */
+/* BUTTON */
 button{
-width:100%;
+width:95%;
 padding:12px;
-margin-top:10px;
+margin:8px 0;
 border:none;
-border-radius:8px;
-background:linear-gradient(90deg,#00c3ff,#6a5cff);
+border-radius:10px;
+background:linear-gradient(90deg,#00c6ff,#0072ff);
 color:#fff;
 font-weight:bold;
 cursor:pointer;
 }
 
-/* Gallery */
+/* GRID */
 #gallery{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -65,10 +66,9 @@ padding:20px;
 }
 
 .card{
-background:#111;
+background:#111827;
 padding:15px;
 border-radius:12px;
-box-shadow:0 0 15px rgba(0,195,255,0.2);
 }
 
 .card img{
@@ -78,7 +78,6 @@ border-radius:10px;
 
 .hidden{display:none;}
 </style>
-
 </head>
 
 <body>
@@ -87,13 +86,21 @@ border-radius:10px;
 
 <!-- LOGIN -->
 <div id="login" class="box">
-<h2>Login</h2>
+<h2>Login / Sign Up</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+<button onclick="signup()">Sign Up</button>
+
+<hr>
 <button onclick="googleLogin()">Login with Google</button>
 </div>
 
 <!-- MEMBER -->
 <div id="member" class="hidden">
-<h2>NFT Gallery</h2>
+<h2 style="text-align:center;">NFT Gallery</h2>
 <div id="gallery"></div>
 </div>
 
@@ -101,87 +108,94 @@ border-radius:10px;
 <div id="admin" class="hidden box">
 <h2>Admin Dashboard</h2>
 
-<input type="file" id="img">
+<input type="file" id="file">
 <input id="name" placeholder="NFT Name">
 <input id="desc" placeholder="Description">
-<input id="link" placeholder="Link">
-
 <button onclick="addNFT()">Add NFT</button>
 
+<h3>Total Users: <span id="userCount">0</span></h3>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup,
+createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
-/* Firebase */
-const firebaseConfig={
-apiKey:"AIzaSyBjEQrF3YgdMR7IotSbJbCB-LxhhRTdEeM",
-authDomain:"myanechoes.firebaseapp.com",
-projectId:"myanechoes"
+const firebaseConfig = {
+apiKey: "AIzaSyBjEQrF3YgdMR7IotSbJbCB-LxhhRTdEeM",
+authDomain: "myanechoes.firebaseapp.com",
+projectId: "myanechoes",
+storageBucket: "myanechoes.firebasestorage.app",
+messagingSenderId: "79155858819",
+appId: "1:79155858819:web:8fd4ffe96c23dab490bab6"
 };
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const provider=new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 
-/* Admin Emails */
-let admins=[
-"sai924166@gmail.com",
-"sais89758@gmail.com"
-];
+// ADMIN EMAIL
+const admins = ["sai924166@gmail.com"];
 
-/* NFT Data */
-let nfts=[];
+// LOGIN
+window.login=()=>{
+let email=document.getElementById("email").value;
+let pass=document.getElementById("password").value;
 
-/* Google Login */
+signInWithEmailAndPassword(auth,email,pass)
+.then(res=>handleUser(res.user.email))
+.catch(err=>alert(err.message));
+};
+
+// SIGNUP
+window.signup=()=>{
+let email=document.getElementById("email").value;
+let pass=document.getElementById("password").value;
+
+createUserWithEmailAndPassword(auth,email,pass)
+.then(res=>handleUser(res.user.email))
+.catch(err=>alert(err.message));
+};
+
+// GOOGLE LOGIN
 window.googleLogin=()=>{
-signInWithPopup(auth,provider).then(res=>{
-let email=res.user.email;
+signInWithPopup(auth,provider)
+.then(res=>handleUser(res.user.email))
+.catch(err=>alert(err.message));
+};
 
+// USER CHECK
+function handleUser(email){
 document.getElementById("login").classList.add("hidden");
 
 if(admins.includes(email)){
 document.getElementById("admin").classList.remove("hidden");
 }else{
 document.getElementById("member").classList.remove("hidden");
-renderNFTs();
 }
-}).catch(err=>{
-alert(err.message);
-});
-};
+}
 
-/* Add NFT */
+// NFT ADD (image upload preview)
 window.addNFT=()=>{
-let file=document.getElementById("img").files[0];
-if(!file){ alert("Select image"); return; }
-
-let img=URL.createObjectURL(file);
-
+let file=document.getElementById("file").files[0];
 let name=document.getElementById("name").value;
 let desc=document.getElementById("desc").value;
-let link=document.getElementById("link").value;
 
-nfts.push({img,name,desc,link});
-renderNFTs();
+let reader=new FileReader();
+reader.onload=()=>{
+document.getElementById("gallery").innerHTML+=`
+<div class="card">
+<img src="${reader.result}">
+<h3>${name}</h3>
+<p>${desc}</p>
+</div>`;
+};
+reader.readAsDataURL(file);
 };
 
-/* Render NFT */
-function renderNFTs(){
-let g=document.getElementById("gallery");
-g.innerHTML="";
-
-nfts.forEach(n=>{
-g.innerHTML+=`
-<div class="card">
-<img src="${n.img}">
-<h3>${n.name}</h3>
-<p>${n.desc}</p>
-<button onclick="window.open('${n.link}')">View</button>
-</div>`;
-});
-}
+// USER COUNT (simple)
+document.getElementById("userCount").innerText="Active";
 </script>
 
 </body>
