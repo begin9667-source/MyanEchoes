@@ -1,90 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyanEchoes NFT</title>
 
 <style>
-body {
-    margin:0;
-    font-family:-apple-system, BlinkMacSystemFont;
-    background:#0f172a;
-    color:#fff;
-}
-
-/* Header */
-header {
-    padding:15px;
-    text-align:center;
-    font-size:24px;
-    background: linear-gradient(90deg,#38bdf8,#6366f1);
-    color:#fff;
-    font-weight:bold;
-}
-
-/* Container UI */
-.container {
-    max-width:400px;
-    margin:50px auto;
-    padding:20px;
-    text-align:center;
-    background:rgba(255,255,255,0.05);
-    border-radius:20px;
-}
-
-/* Inputs */
-input {
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:10px;
-    background:#1e293b;
-    color:#fff;
-}
-
-/* Buttons */
-button {
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:10px;
-    background:linear-gradient(135deg,#38bdf8,#6366f1);
-    color:#fff;
-    font-weight:bold;
-}
-
-.google-btn {
-    background:#fff;
-    color:#000;
-}
-
-/* Gallery */
-#gallery {
-    display:grid;
-    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    padding:20px;
-}
-
-.card {
-    background:#111;
-    padding:15px;
-    border-radius:10px;
-}
-
-.card img {
-    width:100%;
-    border-radius:10px;
-}
-
-.hidden { display:none; }
-
-#adminPanel {
-    padding:20px;
-}
+body{margin:0;font-family:Arial;background:#0a0a0a;color:#fff;text-align:center}
+header{padding:15px;font-size:24px;background:linear-gradient(90deg,#00c3ff,#ffd700);color:#000}
+input,button{padding:10px;margin:5px;border:none;border-radius:5px}
+button{background:#00c3ff;color:#000}
+.hidden{display:none}
+#gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;padding:20px}
+.card{background:#111;padding:15px;border-radius:10px;box-shadow:0 0 10px #00c3ff}
+.card img{width:100%}
 </style>
 
 </head>
@@ -93,168 +21,79 @@ button {
 
 <header>MyanEchoes NFT</header>
 
-<!-- LOGIN -->
-<div id="login" class="container">
-    <h2>Login</h2>
-    <input type="text" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-
-    <button class="google-btn" onclick="googleLogin()">
-        Login with Google
-    </button>
+<div id="login">
+<h2>Login</h2>
+<button onclick="googleLogin()">Login with Google</button>
 </div>
 
-<!-- MEMBER -->
 <div id="member" class="hidden">
-    <h2 style="text-align:center;">NFT Gallery</h2>
-    <div id="gallery"></div>
+<h2>NFT Gallery</h2>
+<div id="gallery"></div>
 </div>
 
-<!-- ADMIN -->
 <div id="admin" class="hidden">
-    <h2 style="text-align:center;">Admin Dashboard</h2>
-
-    <div id="adminPanel">
-        <input id="img" placeholder="Image URL">
-        <input id="name" placeholder="NFT Name">
-        <input id="desc" placeholder="Description">
-        <input id="link" placeholder="Link">
-        <button onclick="addNFT()">Add NFT</button>
-    </div>
-
-    <h3>Manage Admin Emails</h3>
-    <input id="newAdmin" placeholder="Add Admin Email">
-    <button onclick="addAdmin()">Add</button>
-    <ul id="adminList"></ul>
+<h2>Admin Dashboard</h2>
+<input id="img" placeholder="Image URL">
+<input id="name" placeholder="NFT Name">
+<input id="desc" placeholder="Description">
+<input id="link" placeholder="Link">
+<button onclick="addNFT()">Add NFT</button>
 </div>
 
-<script>
-
-// Admin Emails
-let admins = [
-"sai924166@gmail.com",
-"sais89758@gmail.com",
-"nft3187@gmail.com"
-];
-
-// Password
-let password = "Zawzaw123";
-
-// NFT Storage
-let nfts = [];
-
-// LOGIN
-function login(){
-    let email = document.getElementById("email").value;
-    let pass = document.getElementById("password").value;
-
-    if(pass !== password){
-        alert("Wrong password");
-        return;
-    }
-
-    document.getElementById("login").classList.add("hidden");
-
-    if(admins.includes(email)){
-        document.getElementById("admin").classList.remove("hidden");
-        renderAdmins();
-    } else {
-        document.getElementById("member").classList.remove("hidden");
-        renderNFTs();
-    }
-}
-
-// ADD NFT
-function addNFT(){
-    let img = document.getElementById("img").value;
-    let name = document.getElementById("name").value;
-    let desc = document.getElementById("desc").value;
-    let link = document.getElementById("link").value;
-
-    nfts.push({img,name,desc,link});
-    renderNFTs();
-}
-
-// RENDER NFT
-function renderNFTs(){
-    let gallery = document.getElementById("gallery");
-    gallery.innerHTML = "";
-
-    nfts.forEach(nft=>{
-        gallery.innerHTML += `
-        <div class="card">
-            <img src="${nft.img}">
-            <h3>${nft.name}</h3>
-            <p>${nft.desc}</p>
-            <button onclick="window.open('${nft.link}')">Interested</button>
-        </div>
-        `;
-    });
-}
-
-// ADMIN LIST
-function renderAdmins(){
-    let list = document.getElementById("adminList");
-    list.innerHTML = "";
-
-    admins.forEach((a,i)=>{
-        list.innerHTML += `
-        <li>${a} <button onclick="removeAdmin(${i})">Remove</button></li>
-        `;
-    });
-}
-
-// ADD ADMIN
-function addAdmin(){
-    let newAdmin = document.getElementById("newAdmin").value;
-    admins.push(newAdmin);
-    renderAdmins();
-}
-
-// REMOVE ADMIN
-function removeAdmin(i){
-    admins.splice(i,1);
-    renderAdmins();
-}
-
-</script>
-
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBjEQrF3YgdMR7IotSbJbCB-LxhhRTdEeM",
-  authDomain: "myanechoes.firebaseapp.com",
-  projectId: "myanechoes",
-  storageBucket: "myanechoes.firebasestorage.app",
-  messagingSenderId: "79155858819",
-  appId: "1:79155858819:web:8fd4ffe96c23dab490bab6",
-  measurementId: "G-RJ2S6B8J24"
+const firebaseConfig={
+apiKey:"AIzaSyBjEQrF3YgdMR7IotSbJbCB-LxhhRTdEeM",
+authDomain:"myanechoes.firebaseapp.com",
+projectId:"myanechoes"
 };
 
-const app = initializeApp(firebaseConfig);
-getAnalytics(app);
-</script>
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
 
-<!-- Google Login -->
-<script type="module">
-import { getAuth, GoogleAuthProvider, signInWithPopup } 
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+let admins=["sai924166@gmail.com","sais89758@gmail.com"];
+let nfts=[];
 
-const auth = getAuth();
-const provider = new GoogleAuthProvider();
+window.googleLogin=()=>{
+signInWithPopup(auth,provider).then(res=>{
+let email=res.user.email;
+document.getElementById("login").classList.add("hidden");
 
-window.googleLogin = function(){
-    signInWithPopup(auth, provider)
-    .then((result) => {
-        alert("Login Success: " + result.user.email);
-    })
-    .catch((error) => {
-        alert("Error: " + error.message);
-    });
+if(admins.includes(email)){
+document.getElementById("admin").classList.remove("hidden");
+}else{
+document.getElementById("member").classList.remove("hidden");
+renderNFTs();
+}
+}).catch(err=>{
+alert(err.message);
+});
+};
+
+window.addNFT=()=>{
+let img=document.getElementById("img").value;
+let name=document.getElementById("name").value;
+let desc=document.getElementById("desc").value;
+let link=document.getElementById("link").value;
+
+nfts.push({img,name,desc,link});
+renderNFTs();
+};
+
+function renderNFTs(){
+let g=document.getElementById("gallery");
+g.innerHTML="";
+nfts.forEach(n=>{
+g.innerHTML+=`<div class="card">
+<img src="${n.img}">
+<h3>${n.name}</h3>
+<p>${n.desc}</p>
+<button onclick="window.open('${n.link}')">View</button>
+</div>`;
+});
 }
 </script>
 
